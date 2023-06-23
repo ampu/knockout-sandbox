@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Knockout Sandbox</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+  <symbol id="move-icon" viewBox="0 0 8 16">
+    <path d="M4.69594 14.7086C4.30473 15.0991 3.67045 15.0991 3.27924 14.7086L0.293409 11.7296C-0.097803 11.339 -0.0978031 10.7059 0.293409 10.3153C0.684621 9.92482 1.3189 9.92482 1.71011 10.3153L4.69594 13.2944C5.08715 13.6849 5.08715 14.318 4.69594 14.7086Z"
+          fill="currentColor"/>
+    <path d="M3.30385 14.7086C3.69506 15.0991 4.32934 15.0991 4.72055 14.7086L7.70659 11.7296C8.0978 11.339 8.0978 10.7059 7.70659 10.3153C7.31538 9.92482 6.6811 9.92482 6.28989 10.3153L3.30385 13.2944C2.91264 13.6849 2.91264 14.318 3.30385 14.7086Z"
+          fill="currentColor"/>
+    <path d="M3.98759 14.0157C3.43433 14.0157 2.98583 13.5679 2.98583 13.0157V3C2.98583 2.44772 3.43433 2 3.98759 2C4.54085 2 4.98935 2.44772 4.98935 3V13.0157C4.98935 13.5679 4.54085 14.0157 3.98759 14.0157Z"
+          fill="currentColor"/>
+    <path d="M4.69594 0.292893C4.30473 -0.0976311 3.67045 -0.0976311 3.27924 0.292893L0.293409 3.27191C-0.097803 3.66243 -0.0978031 4.2956 0.293409 4.68612C0.684621 5.07664 1.3189 5.07664 1.71011 4.68612L4.69594 1.70711C5.08715 1.31658 5.08715 0.683417 4.69594 0.292893Z"
+          fill="currentColor"/>
+    <path d="M3.30385 0.292893C3.69506 -0.0976311 4.32934 -0.0976311 4.72055 0.292893L7.70659 3.27191C8.0978 3.66243 8.0978 4.2956 7.70659 4.68612C7.31538 5.07664 6.6811 5.07664 6.28989 4.68612L3.30385 1.70711C2.91264 1.31658 2.91264 0.683417 3.30385 0.292893Z"
+          fill="currentColor"/>
+  </symbol>
+  <symbol id="open-icon" viewBox="0 0 8 5">
+    <path d="M3.53976 4.4727C3.28126 4.21408 3.28126 3.79476 3.53976 3.53614L6.87001 0.204315C7.12851 -0.0543084 7.54762 -0.054308 7.80612 0.204315C8.06462 0.462938 8.06462 0.88225 7.80612 1.14087L4.47587 4.4727C4.21737 4.73132 3.79826 4.73132 3.53976 4.4727Z"
+          fill="#0066FF"/>
+    <path d="M4.47058 4.4727C4.72908 4.21408 4.72908 3.79476 4.47058 3.53614L1.12999 0.193967C0.871489 -0.064656 0.452377 -0.0646556 0.193876 0.193968C-0.0646252 0.452591 -0.0646252 0.871902 0.193876 1.13053L3.53447 4.4727C3.79297 4.73132 4.21208 4.73132 4.47058 4.4727Z"
+          fill="#0066FF"/>
+  </symbol>
+</svg>
+
+<ul
+  class="docs category-connect item-connect"
+  data-bind="
+      sortable: {
+          template: `category-template`,
+          data: categories,
+          connectClass: `category-connect`,
+          options: {
+              placeholder: `docs-placeholder`,
+              handle: `.docs-move`,
+              cancel: ``,
+          },
+          beforeMove: $root.beforeMoveCategory,
+      }
+  "
+></ul>
+
+<script type="text/html" id="category-template">
+  <li
+    class="docs__category-wrapper"
+    data-bind="title: title"
+  >
+    <div class="docs__category">
+      <button
+        type="button"
+        class="docs-open"
+        aria-label="Открыть"
+        data-bind="
+            css: {active: opened},
+            click: $root.toggleOpen,
+            enable: items().length > 0
+        "
+      >
+        <svg height="12" width="8">
+          <use xlink:href="#open-icon"/>
+        </svg>
+      </button>
+
+      <span class="docs__category-title" data-bind="text: title"></span>
+
+      <button
+        type="button"
+        class="docs-move"
+        aria-label="Переместить"
+        data-bind="
+            event: {
+                mousedown: $root.setDraggingCategory
+            }
+        "
+      >
+        <svg width="8" height="16">
+          <use xlink:href="#move-icon"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ko if: $root.isOpenedCategory($data) -->
+    <ul
+      class="docs__items item-connect"
+      data-bind="
+          sortable: {
+              template: `item-template`,
+              data: items,
+              connectClass: `item-connect`,
+              options: {
+                  placeholder: `docs-placeholder`,
+                  handle: `.docs-move`,
+                  cancel: ``,
+              },
+          }
+      "
+    ></ul>
+    <!-- /ko -->
+  </li>
+</script>
+
+<script type="text/html" id="item-template">
+  <li class="docs__item">
+    <span class="docs__item-title" data-bind="text: title"></span>
+
+    <button
+      type="button"
+      class="docs-move"
+      aria-label="Переместить"
+    >
+      <svg width="8" height="16">
+        <use xlink:href="#move-icon"/>
+      </svg>
+    </button>
+  </li>
+</script>
+
+<script src="/node_modules/knockout/build/output/knockout-latest.debug.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script src="/node_modules/knockout-sortable/build/knockout-sortable.js"></script>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

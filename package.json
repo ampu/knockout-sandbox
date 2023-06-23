@@ -1,0 +1,23 @@
+{
+  "name": "knockout-sandbox",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy:gh-pages": "touch public/.nojekyll && gh-pages -t -d public"
+  },
+  "devDependencies": {
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "jquery": "3.7.0",
+    "jquery-ui": "1.13.2",
+    "knockout": "3.5.1",
+    "knockout-sortable": "1.2.2",
+    "sass": "1.63.5"
+  }
+}
